@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  createdAt    DateTime  @default(now())
+  id           Int       @id @default(autoincrement())
+  title        String
+  updatedAt    DateTime  @updatedAt
+  forClass     Class
+  forBatchTime Batchtime
+  courseFee    Int
+  students     Student[]
+  exams        Exam[]
+  isActive     Boolean
+}
+
+model Exam {
+  id           Int        @id @default(autoincrement())
+  title        String
+  forCourse    Course     @relation(fields: [courseId], references: [id])
+  students     Student[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  isActive     Boolean
+  mark         Int
+  paper        Paper
+  chapter      String
+  forBatch     Batch?
+  forBatchTime Batchtime?
+  courseId     Int
+}
+
+model Operator {
+  id               Int       @id @default(autoincrement())
+  name             String
+  studentsAdmitted Student[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Student {
+  address          String
+  batch            Batch?
+  batchTime        Batchtime
+  courses          Course[]
+  createdAt        DateTime  @default(now())
+  currentClass     Class
+  currentInstitute String
+  dob              DateTime
+  fathersName      String
+  gender           Gender
+  id               Int       @id @default(autoincrement())
+  mothersName      String
+  name             String
+  nickname         String
+  phone            String
+  roll             Int
+  updatedAt        DateTime  @updatedAt
+  exams            Exam[]
+  Operator         Operator? @relation(fields: [operatorId], references: [id])
+  operatorId       Int?
+  role             Role
+}
+
+enum Role {
+  STUDENT
+  OPERATOR
+  ADMIN
+}
+
+enum Paper {
+  FIRST
+  SECOND
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Batchtime {
+  SAT
+  SUN
+}
+
+enum Batch {
+  ENG
+  MED
+  UNI
+}
+
+enum Class {
+  NINE
+  TEN
+  SSC
+  ELEVEN
+  TWELVE
+  HSC
+  ADMISSION
+}
