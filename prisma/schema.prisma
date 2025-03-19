@@ -51,27 +51,29 @@ model Operator {
 }
 
 model Student {
-  address          String
-  batch            Batch?
-  batchTime        Batchtime
-  courses          Course[]
-  createdAt        DateTime  @default(now())
-  currentClass     Class
-  currentInstitute String
-  dob              DateTime
-  fathersName      String
-  gender           Gender
-  id               Int       @id @default(autoincrement())
-  mothersName      String
-  name             String
-  nickname         String
-  phone            String
-  roll             Int
-  updatedAt        DateTime  @updatedAt
-  exams            Exam[]
-  Operator         Operator? @relation(fields: [operatorId], references: [id])
-  operatorId       Int?
-  role             Role
+  address           String
+  hscBatch          Int
+  batchTime         Batchtime
+  courses           Course[]
+  createdAt         DateTime  @default(now())
+  currentClass      Class
+  currentInstitute  String
+  dob               DateTime
+  fathersName       String
+  fathersOccupation String
+  gender            Gender
+  id                Int       @id @default(autoincrement())
+  mothersName       String
+  mothersOccupation String
+  name              String
+  nickname          String
+  phone             String
+  roll              Int?
+  updatedAt         DateTime  @updatedAt
+  exams             Exam[]
+  role              Role      @default(STUDENT)
+  Operator          Operator? @relation(fields: [operatorId], references: [id])
+  operatorId        Int?
 }
 
 enum Role {
@@ -104,9 +106,9 @@ enum Batch {
 enum Class {
   NINE
   TEN
-  SSC
-  ELEVEN
-  TWELVE
-  HSC
-  ADMISSION
+  HSC_1ST
+  HSC_2ND
+  ADM_ENG
+  ADM_MED
+  ADM_UNI
 }

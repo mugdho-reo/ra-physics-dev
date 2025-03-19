@@ -14,7 +14,7 @@ CREATE TYPE "Batchtime" AS ENUM ('SAT', 'SUN');
 CREATE TYPE "Batch" AS ENUM ('ENG', 'MED', 'UNI');
 
 -- CreateEnum
-CREATE TYPE "Class" AS ENUM ('NINE', 'TEN', 'SSC', 'ELEVEN', 'TWELVE', 'HSC', 'ADMISSION');
+CREATE TYPE "Class" AS ENUM ('NINE', 'TEN', 'HSC_1ST', 'HSC_2ND', 'ADM_ENG', 'ADM_MED', 'ADM_UNI');
 
 -- CreateTable
 CREATE TABLE "Course" (
@@ -60,23 +60,25 @@ CREATE TABLE "Operator" (
 -- CreateTable
 CREATE TABLE "Student" (
     "address" TEXT NOT NULL,
-    "batch" "Batch",
+    "hscBatch" INTEGER NOT NULL,
     "batchTime" "Batchtime" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "currentClass" "Class" NOT NULL,
     "currentInstitute" TEXT NOT NULL,
     "dob" TIMESTAMP(3) NOT NULL,
     "fathersName" TEXT NOT NULL,
+    "fathersOccupation" TEXT NOT NULL,
     "gender" "Gender" NOT NULL,
     "id" SERIAL NOT NULL,
     "mothersName" TEXT NOT NULL,
+    "mothersOccupation" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "roll" INTEGER NOT NULL,
+    "roll" INTEGER,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'STUDENT',
     "operatorId" INTEGER,
-    "role" "Role" NOT NULL,
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
 );
