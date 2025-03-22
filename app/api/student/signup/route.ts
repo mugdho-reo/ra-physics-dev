@@ -6,9 +6,20 @@ export async function POST(req: Request) {
     const { phone, password } = await req.json();
     console.log(phone);
     console.log(password);
+    const existingPhone = await prisma.student.findUnique(
+        {
+            where: {
+                phone: phone
+            }
+        }
+    );
+    if (existingPhone) {
+        NextResponse.json({ user: null, message: "Phone already exists!" }, { status: 409 });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const student = await prisma.student.create({
+    const newStudent = await prisma.student.create({
         data: { phone, password: hashedPassword }
     });
-    return NextResponse.json(student);
+    return NextResponse.json({ student: newStudent, message: "Student created successfully." }, { status: 201 });
 }
