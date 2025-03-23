@@ -1,3 +1,33 @@
+// async function handleSubmit(formData: FormData) {
+//     setError(null);
+//     setLoading(true);
+//     const data = {
+//         phone: formData.get("phone"),
+//         password: formData.get("password"),
+//     };
+
+//     try {
+//         const res = await fetch("/api/student/login", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(data),
+//         });
+
+//         if (!res.ok) {
+//             const errorMessage = await res.text();
+//             throw new Error(errorMessage || "Login failed");
+//         }
+
+//         // Success response
+//         alert("Login successful! 🎉");
+//         router.push("/"); // Redirect to dashboard
+//     } catch (error) {
+//         console.error("Login error:", error);
+//         setError("Invalid phone or password. Please try again.");
+//     } finally {
+//         setLoading(false);
+//     }
+// }
 "use client";
 
 import { useState } from "react";
@@ -8,45 +38,41 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react"; // Icon for loading state
 import { motion } from "framer-motion"; // Smooth animations
+import { signIn } from "next-auth/react";
 
 const StudentLogin = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
 
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(null);
         setLoading(true);
 
         const formData = new FormData(event.currentTarget);
-        const data = {
-            phone: formData.get("phone"),
-            password: formData.get("password"),
-        };
+        const phone = formData.get("phone") as string;
+        const password = formData.get("password") as string;
 
         try {
-            const res = await fetch("/api/student/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            const result = await signIn("credentials", {
+                redirect: false,
+                phone,
+                password,
             });
 
-            if (!res.ok) {
-                const errorMessage = await res.text();
-                throw new Error(errorMessage || "Login failed");
+            if (result?.error) {
+                setError("Invalid phone or password. Please try again.");
+            } else {
+                router.push("/profile/complete"); // Redirect to home or dashboard
             }
-
-            // Success response
-            alert("Login successful! 🎉");
-            router.push("/"); // Redirect to dashboard
         } catch (error) {
             console.error("Login error:", error);
-            setError("Invalid phone or password. Please try again.");
+            setError("An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
@@ -66,7 +92,7 @@ const StudentLogin = () => {
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-2">
                                 <Label htmlFor="phone" className="text-white">Phone</Label>
-                                <Input type="text" id="phone" name="phone" required className="bg-white/20 text-white placeholder-gray-300 border-none" />
+                                <Input type="number" id="phone" name="phone" required className="bg-white/20 text-white placeholder-gray-300 border-none" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password" className="text-white">Password</Label>

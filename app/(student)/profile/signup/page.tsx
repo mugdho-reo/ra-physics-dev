@@ -39,7 +39,7 @@ const StudentSignUp = () => {
 
             // Success response
             alert("Signup successful! 🎉");
-            router.push("/"); // Redirect to dashboard
+            router.push("/profile/login"); // Redirect to dashboard
         } catch (error) {
             console.error("Signup error:", error);
             setError("Signup failed. Please try again.");
@@ -66,7 +66,7 @@ const StudentSignUp = () => {
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-2">
                                 <Label htmlFor="phone" className="text-white">Phone</Label>
-                                <Input type="text" id="phone" name="phone" required className="bg-white/20 text-white placeholder-gray-300 border-none" />
+                                <Input type="number" id="phone" name="phone" required className="bg-white/20 text-white placeholder-gray-300 border-none" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password" className="text-white">Password</Label>

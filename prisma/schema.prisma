@@ -53,15 +53,15 @@ model Operator {
 model Student {
   address           String?
   hscBatch          Int?
-  batchTime         Batchtime?
+  batchTime         Batchtime? @default(SAT)
   courses           Course[]
   createdAt         DateTime   @default(now())
-  currentClass      Class?
+  currentClass      Class?     @default(NINE)
   currentInstitute  String?
   dob               DateTime?
   fathersName       String?
   fathersOccupation String?
-  gender            Gender?
+  gender            Gender?    @default(MALE)
   id                Int        @id @default(autoincrement())
   mothersName       String?
   mothersOccupation String?
