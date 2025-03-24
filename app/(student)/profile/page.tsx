@@ -8,7 +8,7 @@ const StudentProfile = async () => {
     if (!session?.user) {
         redirect("/profile/login");
     }
-
+    
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
@@ -75,6 +75,7 @@ const StudentProfile = async () => {
                         Edit Profile
                     </button>
                     <button
+                    
                         className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition duration-300"
                     >
                         Logout

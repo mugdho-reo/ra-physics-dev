@@ -220,3 +220,21 @@ export async function completeStudent(studentData: any) {
         return { error: "Failed to update student" };
     }
 }
+
+export async function buyCourseById(courseId: number, studentId: number) {
+    try {
+        const updatedCourse = await prisma.course.update({
+            where: { id: courseId },
+            data: {
+                students: {
+                    connect: { id: studentId },
+                },
+            },
+        });
+
+        return { updatedCourse, added: true };
+    } catch (error) {
+        console.error("Error adding student to course:", error);
+        return { error: "Failed to enroll student in course" };
+    }
+}

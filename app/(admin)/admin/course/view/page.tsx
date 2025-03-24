@@ -4,17 +4,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteCourse, getAllCourse } from "@/actions/course";
-
+import { Course } from "@/lib/types";
 export default function ViewCourses() {
-    interface Course {
-        id: number;
-        title: string;
-        forClass: string;
-        courseFee: number;
-        forBatchTime: string;
-        isActive: boolean;
-    }
-
+    
     const [courses, setCourses] = useState<Course[]>([]);
 
     useEffect(() => {
