@@ -1,64 +1,12 @@
-import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Form from "next/form";
-
-function generateRollNumber(hscBatch: number, studentClass: string, studentId: number) {
-    const classMapping = {
-        "NINE": "09",
-        "TEN": "10",
-        "HSC_1ST": "11",
-        "HSC_2ND": "12",
-        "ADM_ENG": "13",
-        "ADM_MED": "14",
-        "ADM_UNI": "15",
-    };
-    const classCode = classMapping[studentClass] || "00";
-    const rollNumber = `${hscBatch}${classCode}${String(studentId).padStart(4, "0")}`;
-    return rollNumber;
-}
+import { createStudent } from "@/actions/student";
 
 export default function CreateStudent() {
-    async function createStudent(formData: FormData) {
-        "use server";
-        const dobValue = formData.get("dob") as string | null;
-        const dob = dobValue ? new Date(dobValue) : null;
-
-        const data = {
-            name: formData.get("name"),
-            fathersName: formData.get("fathersName"),
-            fathersOccupation: formData.get("fathersOccupation"),
-            mothersName: formData.get("mothersName"),
-            mothersOccupation: formData.get("mothersOccupation"),
-            address: formData.get("address"),
-            phone: formData.get("phone"),
-            nickname: formData.get("nickname"),
-            dob: dobValue ? new Date(dobValue) : new Date(),
-            gender: formData.get("gender"),
-            currentInstitute: formData.get("currentInstitute"),
-            currentClass: formData.get("currentClass"),
-            hscBatch: parseInt(formData.get("hscBatch")),
-            batchTime: formData.get("batchTime"),
-        };
-
-        try {
-            const student = await prisma.student.create({
-                data
-            }
-            );
-            const rollNumber = generateRollNumber(data.hscBatch, data.currentClass, student.id);
-            await prisma.student.update({
-                where: { id: student.id },
-                data: { roll: parseInt(rollNumber, 10) },
-            });
-            console.log("Student created with roll number:", rollNumber);
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">

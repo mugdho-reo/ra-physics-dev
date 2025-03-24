@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { deleteCourse, getAllCourse } from "@/actions/course";
 
 export default function ViewCourses() {
     interface Course {
@@ -19,16 +20,12 @@ export default function ViewCourses() {
     useEffect(() => {
         async function fetchCourses() {
             try {
-                const res = await fetch("/api/course/get", {
-                    method: "POST", // Change method to POST
-                    headers: { "Content-Type": "application/json" },
-                });
+                const data = await getAllCourse();
 
-                if (!res.ok) {
-                    throw new Error("Failed to fetch courses");
+                if (data.error) {
+                    throw new Error(data.error);
                 }
 
-                const data = await res.json();
                 setCourses(data);
             } catch (error) {
                 console.error("Error fetching courses:", error);
@@ -37,15 +34,11 @@ export default function ViewCourses() {
         fetchCourses();
     }, []);
 
-    async function deleteCourse(id: number) {
-        try {
-            const res = await fetch(`/api/course/remove`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id }),
-            });
 
-            if (res.ok) {
+    async function removeCourse(id: number) {
+        try {
+            const { deleted } = await deleteCourse(id);
+            if (deleted) {
                 setCourses(courses.filter((course) => course.id !== id));
             } else {
                 console.error("Failed to delete course");
@@ -80,7 +73,7 @@ export default function ViewCourses() {
                                 </span>
                             </div>
                             <Button
-                                onClick={() => deleteCourse(course.id)}
+                                onClick={() => removeCourse(course.id)}
                                 className="mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-all"
                             >
                                 Delete

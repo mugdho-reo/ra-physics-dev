@@ -1,35 +1,12 @@
-import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Form from "next/form";
+import { createCourse } from "@/actions/course";
 
 export default function CreateCourse() {
-    async function createCourse(formData: FormData) {
-        "use server";
-        const forClass = formData.get("class") as string;
-        const title = formData.get("title") as string;
-        const forBatchTime = formData.get("batchTime") as string;
-        const courseFee = parseInt(formData.get("courseFee") as string, 10);
-        const isActive = formData.get("isActive") === "true";
-
-        try {
-            const response = await prisma.course.create({
-                data: {
-                    forClass,
-                    title,
-                    forBatchTime,
-                    courseFee,
-                    isActive,
-                },
-            });
-            console.log(response);
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">

@@ -1,33 +1,3 @@
-// async function handleSubmit(formData: FormData) {
-//     setError(null);
-//     setLoading(true);
-//     const data = {
-//         phone: formData.get("phone"),
-//         password: formData.get("password"),
-//     };
-
-//     try {
-//         const res = await fetch("/api/student/login", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(data),
-//         });
-
-//         if (!res.ok) {
-//             const errorMessage = await res.text();
-//             throw new Error(errorMessage || "Login failed");
-//         }
-
-//         // Success response
-//         alert("Login successful! 🎉");
-//         router.push("/"); // Redirect to dashboard
-//     } catch (error) {
-//         console.error("Login error:", error);
-//         setError("Invalid phone or password. Please try again.");
-//     } finally {
-//         setLoading(false);
-//     }
-// }
 "use client";
 
 import { useState } from "react";

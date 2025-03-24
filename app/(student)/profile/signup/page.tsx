@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react"; // Icon for loading state
-import { motion } from "framer-motion"; // Smooth animations
+import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { studentSignUp } from "@/actions/credentials"; // Import server action
 
 const StudentSignUp = () => {
     const [error, setError] = useState<string | null>(null);
@@ -20,29 +21,19 @@ const StudentSignUp = () => {
         setLoading(true);
 
         const formData = new FormData(event.currentTarget);
-        const data = {
-            phone: formData.get("phone"),
-            password: formData.get("password"),
-        };
 
         try {
-            const res = await fetch("/api/student/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
+            const response = await studentSignUp(formData); // Call server action
 
-            if (!res.ok) {
-                const errorMessage = await res.text();
-                throw new Error(errorMessage || "Signup failed");
+            if (response.error) {
+                throw new Error(response.error);
             }
 
-            // Success response
             alert("Signup successful! 🎉");
-            router.push("/profile/login"); // Redirect to dashboard
+            router.push("/profile/login");
         } catch (error) {
             console.error("Signup error:", error);
-            setError("Signup failed. Please try again.");
+            setError(error.message || "Signup failed. Please try again.");
         } finally {
             setLoading(false);
         }

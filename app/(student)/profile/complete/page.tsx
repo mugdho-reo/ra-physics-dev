@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { completeStudent, deleteStudent, getStudentById } from "@/actions/student";
 
 export default function CompleteStudentProfile() {
     const { data: session, status } = useSession();
@@ -35,18 +36,12 @@ export default function CompleteStudentProfile() {
             if (!session?.user?.id) return;
 
             try {
-                const res = await fetch(`/api/student/getbyid`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: session.user.id }),
-                });
-
-                if (!res.ok) {
+                const id = session.user.id;
+                const res = await getStudentById(parseInt(id));
+                if (!res) {
                     throw new Error("Failed to fetch student details.");
                 }
-
-                const data = await res.json();
-                setEditableData(data);
+                setEditableData(res);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -66,18 +61,13 @@ export default function CompleteStudentProfile() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch("/api/student/complete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editableData),
-            });
+            const updatedData = await completeStudent(editableData);
 
-            if (!res.ok) {
-                throw new Error("Update failed. Try again.");
+            if (updatedData.error) {
+                throw new Error(updatedData.error);
             }
 
-            const data = await res.json();
-            setEditableData(data);
+            setEditableData(updatedData);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -89,14 +79,13 @@ export default function CompleteStudentProfile() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch("/api/student/delete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ roll: editableData.roll }),
-            });
+            const formData = new FormData();
+            formData.append("roll", editableData.roll);
 
-            if (!res.ok) {
-                throw new Error("Delete failed. Try again.");
+            const res = await deleteStudent(formData);
+
+            if (res.error) {
+                throw new Error(res.error);
             }
 
             setEditableData({
@@ -125,6 +114,7 @@ export default function CompleteStudentProfile() {
         }
     }
 
+
     if (loading) return <p className="text-center mt-10">Loading...</p>;
 
     return (
@@ -148,7 +138,13 @@ export default function CompleteStudentProfile() {
                     <Input type="text" name="address" value={editableData.address || ""} onChange={handleChange} />
 
                     <label>Date of Birth</label>
-                    <Input type="date" name="dob" value={editableData.dob ? editableData.dob.split("T")[0] : ""} onChange={handleChange} />
+                    <Input
+                        type="date"
+                        name="dob"
+                        value={editableData.dob ? new Date(editableData.dob).toISOString().split("T")[0] : ""}
+                        onChange={handleChange}
+                    />
+
 
                     <label>Gender</label>
                     <Select name="gender" value={editableData.gender || "MALE"} defaultValue={"MALE"} onValueChange={(value) => setEditableData(prev => ({ ...prev, gender: value }))}>
