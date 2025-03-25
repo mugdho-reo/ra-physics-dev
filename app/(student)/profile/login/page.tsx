@@ -34,7 +34,7 @@ const StudentLogin = () => {
             if (result?.error) {
                 setError("Invalid phone or password. Please try again.");
             } else {
-                router.push("/profile/complete"); // Redirect to home or dashboard
+                router.push("/profile/edit"); // Redirect to home or dashboard
             }
         } catch (error) {
             console.error("Login error:", error);

@@ -48,3 +48,25 @@ export async function getAllCourse() {
         return { error: "Internal server error" };
     }
 }
+
+export async function getBoughtCourses(studentId: number) {
+    try {
+        const studentWithCourses = await prisma.student.findUnique({
+            where: {
+                id: studentId
+            },
+            include: {
+                courses: true // Include the courses relation
+            }
+        });
+
+        if (!studentWithCourses) {
+            return { error: "Student not found" };
+        }
+
+        return studentWithCourses.courses;
+    } catch (error) {
+        console.error("Error fetching courses:", error);
+        return { error: "Internal server error" };
+    }
+}
